@@ -1,0 +1,5 @@
+{
+  "load_extensions": {
+    "jupyter-vis3d/extension": true
+  }
+}
