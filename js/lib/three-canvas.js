@@ -79,11 +79,23 @@ class ThreeCanvas {
         renderer.domElement.style.width = "100%";
         renderer.domElement.style.height = "100%";
 
-        // Add a cube
-        // const geometry = new THREE.BoxGeometry();
-        // const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-        // const cube = new THREE.Mesh(geometry, material);
-        // scene.add(cube);
+        // Add an ambient light
+        var intensity = 0.5;
+        const color = 0xFFFFFF;
+        const amb_light = new THREE.AmbientLight(color, intensity);
+        scene.add(amb_light);
+
+        // Add a directional light source
+        intensity = 1.0;
+        const light = new THREE.DirectionalLight(color, intensity);
+        light.position.set(10, 10, 6);
+        light.target.position.set(0, 0, 0);
+        scene.add(light);
+        scene.add(light.target);
+
+        const objects = new THREE.Group();
+        scene.add(objects);
+        this.objects = objects;
 
         // Set orbit controls
         camera.position.z = 5;
@@ -138,9 +150,9 @@ class ThreeCanvas {
 
     draw_sphere(pos, radius, color) {
         const geometry = new THREE.SphereGeometry(radius, 32, 32);
-        const material = new THREE.MeshBasicMaterial({ color: new THREE.Color(color) });
+        const material = new THREE.MeshLambertMaterial({ color: new THREE.Color(color) });
         const sphere = new THREE.Mesh(geometry, material);
-        this.scene.add(sphere);
+        this.objects.add(sphere);
         sphere.position.x = pos[0];
         sphere.position.y = pos[2];
         sphere.position.z = -pos[1];
@@ -148,13 +160,18 @@ class ThreeCanvas {
 
     draw_cube(pos, size, color) {
         const geometry = new THREE.BoxGeometry(size, size, size);
-        const material = new THREE.MeshBasicMaterial({ color: new THREE.Color(color) });
+        const material = new THREE.MeshLambertMaterial({ color: new THREE.Color(color) });
         const cube = new THREE.Mesh(geometry, material);
-        console.log(cube);
-        this.scene.add(cube);
+        this.objects.add(cube);
         cube.position.x = pos[0];
         cube.position.y = pos[2];
         cube.position.z = -pos[1];
+    }
+
+    clear() {
+        while(this.objects.children.length > 0){ 
+            this.objects.remove(this.objects.children[0]); 
+        }
     }
 }
 

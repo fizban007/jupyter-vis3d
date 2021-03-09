@@ -1,15 +1,14 @@
 import ipywidgets as widgets
 import numpy as np
-from traitlets import Unicode, Int, Bool, Bytes
+from traitlets import Unicode, Int, Bool, Bytes, List, Dict
 from io import BytesIO
 
 # See js/lib/example.js for the frontend counterpart to this file.
 def array_to_list(array):
-    if isinstance(pos, np.ndarray):
-        return pos.tolist()
+    if isinstance(array, np.ndarray):
+        return array.tolist()
     else:
-        return pos
-
+        return array
 
 @widgets.register
 class Vis3D(widgets.DOMWidget):
@@ -46,6 +45,8 @@ class Vis3D(widgets.DOMWidget):
 
     volume_bytes = Bytes().tag(sync=True)
 
+    messages = List([]).tag(sync=True)
+
     volume_data = np.array([])
 
     def __init__(self, **kwargs):
@@ -63,13 +64,20 @@ class Vis3D(widgets.DOMWidget):
         self.volume_data = data
         self.volume_to_bytes()
 
+    def clear(self):
+        self.send("clear");
+
     def draw_sphere(self, **kwargs):
         message = {}
         message['type'] = "sphere"
         message['pos'] = array_to_list(kwargs['pos']) if 'pos' in kwargs else [0, 0, 0]
         message['radius'] = kwargs['radius'] if 'radius' in kwargs else 1
         message['color'] = kwargs['color'] if 'color' in kwargs else "#aaaaaa"
-        self.send(message)
+        m = self.messages.copy()
+        m.insert(0, message)
+        self.messages = m
+        # self.messages.insert(0, message)
+        self.send("handle_messages")
 
     def draw_cube(self, **kwargs):
         message = {}
@@ -77,4 +85,8 @@ class Vis3D(widgets.DOMWidget):
         message['pos'] = array_to_list(kwargs['pos']) if 'pos' in kwargs else [0, 0, 0]
         message['size'] = kwargs['size'] if 'size' in kwargs else 1
         message['color'] = kwargs['color'] if 'color' in kwargs else "#aaaaaa"
-        self.send(message)
+        m = self.messages.copy()
+        m.insert(0, message)
+        self.messages = m
+        # self.messages.insert(0, message)
+        self.send("handle_messages")

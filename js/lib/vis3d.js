@@ -107,6 +107,7 @@ var VisModel = widgets.DOMWidgetModel.extend({
         color: 0x00ff00,
         enable_stats: true,
         volume_bytes: 0,
+        messages: [],
     }),
 });
 
@@ -115,19 +116,48 @@ var VisView = widgets.DOMWidgetView.extend({
     initialize: function () {
         this.model.on("change:volume_bytes", this.process_volume_bytes, this);
         this.process_volume_bytes();
+
+        // this.model.on("change:messages", this.handle_messages, this);
         this.listenTo(this.model, "msg:custom", function () {
             var response = arguments[0];
-            // console.log(response);
-            if (response.type == "sphere") {
-                this.canvas.draw_sphere(response.pos, response.radius, response.color);
-            } else if (response.type == "cube") {
-                this.canvas.draw_cube(response.pos, response.size, response.color);
+            console.log(response);
+            if (response == "handle_messages") {
+                this.handle_messages();
+            } else if (response == "clear") {
+                this.canvas.clear();
             }
         });
     },
 
+    handle_messages: function () {
+        var messages = this.model.get("messages");
+        console.log(messages);
+        
+        if (messages.length > 1) {
+            while (messages.length > 0) {
+                const response = messages.pop();
+                if (response == {}) {
+                } else if (response.type == "sphere") {
+                    this.canvas.draw_sphere(
+                        response.pos,
+                        response.radius,
+                        response.color
+                    );
+                } else if (response.type == "cube") {
+                    this.canvas.draw_cube(
+                        response.pos,
+                        response.size,
+                        response.color
+                    );
+                }
+            }
+            this.model.set("messages", [{}]);
+            this.model.save_changes();
+        }
+    },
+
     process_volume_bytes: function () {
-        var arr =  fromArrayBuffer(this.model.get('volume_bytes').buffer);
+        var arr = fromArrayBuffer(this.model.get("volume_bytes").buffer);
         console.log(arr.shape, arr.data);
     },
 
@@ -173,6 +203,8 @@ var VisView = widgets.DOMWidgetView.extend({
             document.addEventListener("fullscreenchange", fsHandler, false);
             document.addEventListener("MSFullscreenChange", fsHandler, false);
         }
+
+        this.handle_messages();
     },
 
     stats_changed: function () {
