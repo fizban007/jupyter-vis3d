@@ -1,0 +1,54 @@
+:root {
+    --fs-bg: rgba(50, 50, 50, 60);
+    --fs-fg: rgba(90, 90, 90, 60);
+}
+
+.three-canvas {
+    /* background: url('./fullscreen.png'); */
+    /* width: 100%; */
+    /* height: 100%; */
+}
+
+.full-screen-button {
+    font-size: 2rem;
+    color: var(--fs-fg);
+    width: 30px;
+    height: 30px;
+    background-color: var(--fs-bg); /* or transparent; will show through only if renderer alpha: true */
+    /* border: 1px solid black; /\* or none; *\/ */
+    border: none; /* or none; */
+    border-radius: 5px;
+    /* margin: 20px; */
+    padding: 5px;
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
+    z-index: 100;
+}
+
+.full-screen {
+    box-sizing: border-box;
+    display: inline-block;
+    border: .1em solid currentColor;
+    width: 1em;
+    height: 1em;
+    position: relative;
+}
+.full-screen:before, .full-screen:after {
+  content: '';
+  background: var(--fs-bg);
+  position: absolute;
+}
+
+.full-screen:before {
+  width: .333em;
+  height: 1em;
+  left: .233em;
+  top: -.1em;
+}
+.full-screen:after {
+  width: 1em;
+  height: .333em;
+  top: .233em;
+  left: -.1em;
+}

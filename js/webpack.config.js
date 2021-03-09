@@ -4,9 +4,12 @@ var version = require('./package.json').version;
 // Custom webpack rules are generally the same for all webpack bundles, hence
 // stored in a separate local variable.
 var rules = [
-    { test: /\.css$/, use: ['style-loader', 'css-loader']}
+    { test: /\.css$/, use: ['style-loader', 'css-loader'] },
+    {
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        type: 'asset/resource',
+    },
 ]
-
 
 module.exports = (env, argv) => {
     var devtool = argv.mode === 'development' ? 'source-map' : false;
@@ -42,6 +45,9 @@ module.exports = (env, argv) => {
                 publicPath: '',
             },
             devtool,
+            experiments: {
+                asset: true,
+            },
             module: {
                 rules: rules
             },
@@ -69,6 +75,9 @@ module.exports = (env, argv) => {
                 publicPath: 'https://unpkg.com/jupyter-vis3d@' + version + '/dist/'
             },
             devtool,
+            experiments: {
+                asset: true,
+            },
             module: {
                 rules: rules
             },
