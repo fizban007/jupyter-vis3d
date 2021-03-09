@@ -45,7 +45,7 @@ class Vis3D(widgets.DOMWidget):
 
     volume_bytes = Bytes().tag(sync=True)
 
-    messages = List([]).tag(sync=True)
+    commands = List([]).tag(sync=True)
 
     volume_data = np.array([])
 
@@ -73,11 +73,11 @@ class Vis3D(widgets.DOMWidget):
         message['pos'] = array_to_list(kwargs['pos']) if 'pos' in kwargs else [0, 0, 0]
         message['radius'] = kwargs['radius'] if 'radius' in kwargs else 1
         message['color'] = kwargs['color'] if 'color' in kwargs else "#aaaaaa"
-        m = self.messages.copy()
+        m = self.commands.copy()
         m.insert(0, message)
-        self.messages = m
+        self.commands = m
         # self.messages.insert(0, message)
-        self.send("handle_messages")
+        self.send("handle_commands")
 
     def draw_cube(self, **kwargs):
         message = {}
@@ -85,8 +85,8 @@ class Vis3D(widgets.DOMWidget):
         message['pos'] = array_to_list(kwargs['pos']) if 'pos' in kwargs else [0, 0, 0]
         message['size'] = kwargs['size'] if 'size' in kwargs else 1
         message['color'] = kwargs['color'] if 'color' in kwargs else "#aaaaaa"
-        m = self.messages.copy()
+        m = self.commands.copy()
         m.insert(0, message)
-        self.messages = m
+        self.commands = m
         # self.messages.insert(0, message)
-        self.send("handle_messages")
+        self.send("handle_commands")

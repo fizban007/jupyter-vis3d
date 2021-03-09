@@ -107,7 +107,7 @@ var VisModel = widgets.DOMWidgetModel.extend({
         color: 0x00ff00,
         enable_stats: true,
         volume_bytes: 0,
-        messages: [],
+        commands: [],
     }),
 });
 
@@ -117,25 +117,25 @@ var VisView = widgets.DOMWidgetView.extend({
         this.model.on("change:volume_bytes", this.process_volume_bytes, this);
         this.process_volume_bytes();
 
-        // this.model.on("change:messages", this.handle_messages, this);
+        // this.model.on("change:commands", this.handle_commands, this);
         this.listenTo(this.model, "msg:custom", function () {
             var response = arguments[0];
             console.log(response);
-            if (response == "handle_messages") {
-                this.handle_messages();
+            if (response == "handle_commands") {
+                this.handle_commands();
             } else if (response == "clear") {
                 this.canvas.clear();
             }
         });
     },
 
-    handle_messages: function () {
-        var messages = this.model.get("messages");
-        console.log(messages);
+    handle_commands: function () {
+        var commands = this.model.get("commands");
+        console.log(commands);
         
-        if (messages.length > 1) {
-            while (messages.length > 0) {
-                const response = messages.pop();
+        if (commands.length > 1) {
+            while (commands.length > 0) {
+                const response = commands.pop();
                 if (response == {}) {
                 } else if (response.type == "sphere") {
                     this.canvas.draw_sphere(
@@ -151,7 +151,7 @@ var VisView = widgets.DOMWidgetView.extend({
                     );
                 }
             }
-            this.model.set("messages", [{}]);
+            this.model.set("commands", [{}]);
             this.model.save_changes();
         }
     },
@@ -204,7 +204,7 @@ var VisView = widgets.DOMWidgetView.extend({
             document.addEventListener("MSFullscreenChange", fsHandler, false);
         }
 
-        this.handle_messages();
+        this.handle_commands();
     },
 
     stats_changed: function () {
