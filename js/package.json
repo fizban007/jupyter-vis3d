@@ -3,7 +3,7 @@
     "version": "0.1.0",
     "description": "A custom 3d visualization library",
     "author": "Alex Chen",
-    "license": "GPL-v3",
+    "license": "GPL-3.0-or-later",
     "main": "lib/index.js",
     "repository": {
         "type": "git",
