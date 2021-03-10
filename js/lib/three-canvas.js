@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Stats from 'three/examples/jsm/libs/stats.module.js';
+import { axes_helper } from "./axes-helper";
 
 //function to make element (cell) fullscreen on most browsers
 function toggleFullscreen(elem) {
@@ -48,7 +49,7 @@ function resize_renderer_to_display(renderer) {
 }
 
 
-class ThreeCanvas {
+export class ThreeCanvas {
     constructor(container, bg = "#000000") {
         // Initialize a stats object
         var stats = new Stats();
@@ -106,21 +107,33 @@ class ThreeCanvas {
         controls.enableDamping = true;
         controls.dampingFactor = 0.25;
 
+        // Add an axes helper
+        var axes = new axes_helper(container, camera, renderer.domElement);
+
         function animate() {
             stats.begin();
             renderer.render(scene, camera);
+
+            axes.sync_camera(camera);
+            axes.render();
 
             // reactive resizing, adapt to the canvas size
             if (resize_renderer_to_display(renderer)) {
                 const canvas = renderer.domElement;
                 camera.aspect = canvas.clientWidth / canvas.clientHeight;
                 camera.updateProjectionMatrix();
+                axes.reposition();
             }
+            controls.update();
             stats.end();
             requestAnimationFrame(animate);
         }
         animate();
 
+        this.fullscreen_button(container);
+    }
+
+    fullscreen_button(container) {
         // Make a fullscreen button
         var btn = document.createElement("div");
         btn.classList.add("full-screen-button");
@@ -175,4 +188,4 @@ class ThreeCanvas {
     }
 }
 
-export { ThreeCanvas };
+// export { ThreeCanvas };

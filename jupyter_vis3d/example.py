@@ -45,7 +45,7 @@ class Vis3D(widgets.DOMWidget):
 
     volume_bytes = Bytes().tag(sync=True)
 
-    commands = List([]).tag(sync=True)
+    commands = List([{}]).tag(sync=True)
 
     volume_data = np.array([])
 
@@ -64,29 +64,28 @@ class Vis3D(widgets.DOMWidget):
         self.volume_data = data
         self.volume_to_bytes()
 
+    def add_command(self, command):
+        m = self.commands.copy()
+        m.insert(0, command)
+        self.commands = m
+        # self.messages.insert(0, message)
+        self.send("handle_commands")
+
     def clear(self):
         self.send("clear");
 
     def draw_sphere(self, **kwargs):
-        message = {}
-        message['type'] = "sphere"
-        message['pos'] = array_to_list(kwargs['pos']) if 'pos' in kwargs else [0, 0, 0]
-        message['radius'] = kwargs['radius'] if 'radius' in kwargs else 1
-        message['color'] = kwargs['color'] if 'color' in kwargs else "#aaaaaa"
-        m = self.commands.copy()
-        m.insert(0, message)
-        self.commands = m
-        # self.messages.insert(0, message)
-        self.send("handle_commands")
+        command = {}
+        command['type'] = "sphere"
+        command['pos'] = array_to_list(kwargs['pos']) if 'pos' in kwargs else [0, 0, 0]
+        command['radius'] = kwargs['radius'] if 'radius' in kwargs else 1
+        command['color'] = kwargs['color'] if 'color' in kwargs else "#aaaaaa"
+        self.add_command(command)
 
     def draw_cube(self, **kwargs):
-        message = {}
-        message['type'] = "cube"
-        message['pos'] = array_to_list(kwargs['pos']) if 'pos' in kwargs else [0, 0, 0]
-        message['size'] = kwargs['size'] if 'size' in kwargs else 1
-        message['color'] = kwargs['color'] if 'color' in kwargs else "#aaaaaa"
-        m = self.commands.copy()
-        m.insert(0, message)
-        self.commands = m
-        # self.messages.insert(0, message)
-        self.send("handle_commands")
+        command = {}
+        command['type'] = "cube"
+        command['pos'] = array_to_list(kwargs['pos']) if 'pos' in kwargs else [0, 0, 0]
+        command['size'] = kwargs['size'] if 'size' in kwargs else 1
+        command['color'] = kwargs['color'] if 'color' in kwargs else "#aaaaaa"
+        self.add_command(command)
