@@ -60,7 +60,7 @@ class axes_helper {
         this.el = div;
 
         // renderer
-        this.renderer2 = new THREE.WebGLRenderer( { alpha: true, });
+        this.renderer2 = new THREE.WebGLRenderer( { alpha: true, antialias: true });
         this.renderer2.setClearColor( 0x000000, 0 );
         this.renderer2.setSize( CANVAS_WIDTH, CANVAS_HEIGHT );
         div.appendChild( this.renderer2.domElement );

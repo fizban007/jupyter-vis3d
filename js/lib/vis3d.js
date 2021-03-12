@@ -163,8 +163,13 @@ var VisView = widgets.DOMWidgetView.extend({
 
     // Defines how the widget gets rendered into the DOM
     render: function () {
+        // console.log(this.el);
+        // var width = this.el.parentElement.offsetWidth;
+        var width = 900;
         const output_element = document.querySelector(".output_subarea");
-        const width = output_element.offsetWidth;
+        if (output_element) {
+            width = output_element.offsetWidth;
+        }
         const height = this.model.get("height");
 
         var container = document.createElement("div");
